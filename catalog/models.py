@@ -32,6 +32,11 @@ class Main_table(models.Model):
     def publish(self):
         self.save()
     def __str__(self):
-        return self.title, self.image
+        return self.title
+
+    def image_tag(self):
+        return u'<img src="%s" />' % self.image
+    image_tag.short_description = 'Image'
+    image_tag.allow_tags = True
 
 

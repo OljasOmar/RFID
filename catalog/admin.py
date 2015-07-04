@@ -4,4 +4,9 @@ from .models import Locations, Authors, Main_table
 # Register your models here.
 admin.site.register(Locations)
 admin.site.register(Authors)
-admin.site.register(Main_table)
+
+
+class Main_tableAdmin(admin.ModelAdmin):
+    readonly_fields = ('image_tag',)
+
+admin.site.register(Main_table, Main_tableAdmin)
