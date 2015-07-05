@@ -5,15 +5,27 @@
     <title>Library Catalog</title>
 </head>
 <body>
-    <div>
-        <h2><a href="">Main Table</a></h2>
-    </div>
-    <div>
-        <h2><a href="">Locations</a></h2>
-    </div>
-    <div>
-        <h2><a href="">Authors</a></h2>
-    </div>
+    <h1>Main Table</h1>
+    {% for book in books %}
+        {{book}}
+        <div>{{ book.author }}</div>
+        <div>{{ book.image }}</div>
+        <div>{{ book.location }}</div>
+    {% endfor %}
+
+
+    {% if loc %}
+        <h2>Locations</h2>
+        {% for l in loc %}
+            {{ l }}
+        {% endfor %}
+    {% endif %}
+
+
+<h2>Authors</h2>
+    {% for l in authors %}
+        {{ l }}
+    {% endfor %}
 
 
 </body>

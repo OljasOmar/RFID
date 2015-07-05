@@ -37,7 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'catalog',
+    'catalog'
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -106,3 +107,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 ENV_PATH = os.path.abspath(os.path.dirname(__file__))
 MEDIA_ROOT = os.path.join(ENV_PATH, 'Images/')
+
