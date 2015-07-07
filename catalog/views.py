@@ -1,4 +1,5 @@
 from catalog.forms import ImageUpload
+from django.core import serializers
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
 from .models import Main_table, Locations, Authors
@@ -10,6 +11,14 @@ def post_list(request):
     authors = Authors.objects.all()
     return render(request, 'catalog/post_list.html', {'books':books, 'loc':locations, 'authors': authors})
 
+def book_info(request, rfidValue):
+    try:
+        book = Main_table.objects.get(rfid=rfidValue)
+        return HttpResponse(serializers.serialize("json", [book]))
+    except Main_table.DoesNotExist:
+        return HttpResponse("Error")
+
+
 def upload_pic(request):
     if request.method == 'POST':
         form = ImageUpload(request.POST, request.FILES)
@@ -19,10 +28,4 @@ def upload_pic(request):
             form.save()
             return HttpResponse('image upload success')
         return HttpResponseForbidden('allowed only via POST')
-
-'''def post_list(request):
-    main_table = Main_table.objects.filter().order_by('id')
-    return render(request, 'catalog/post_list.html', {'main_table': main_table})
-'''
-
 

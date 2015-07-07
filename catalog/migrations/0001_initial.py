@@ -13,30 +13,29 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Authors',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
-                ('author_id', models.CharField(max_length=255)),
-                ('author_name', models.CharField(max_length=255)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('name', models.CharField(max_length=255, help_text='Enter name of the author')),
             ],
         ),
         migrations.CreateModel(
             name='Locations',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
-                ('bookCode', models.CharField(max_length=255)),
-                ('department', models.CharField(max_length=255)),
-                ('shelve', models.CharField(max_length=255)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('bookCode', models.CharField(max_length=255, help_text='Enter code of the book. use UPPERCASE')),
+                ('department', models.CharField(max_length=255, help_text='Specify the department. Use UPPERCASE')),
+                ('shelve', models.CharField(max_length=255, help_text='Specify the shelve')),
             ],
         ),
         migrations.CreateModel(
             name='Main_table',
             fields=[
-                ('id', models.CharField(serialize=False, max_length=255, primary_key=True)),
-                ('title', models.CharField(max_length=255)),
-                ('author_name_id', models.CharField(max_length=255)),
-                ('year_pb', models.CharField(max_length=255)),
-                ('location_id', models.CharField(max_length=255)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('title', models.CharField(max_length=255, help_text='Enter title of a book')),
+                ('year_pb', models.CharField(max_length=255, help_text='Enter published year of a book')),
                 ('rfid', models.CharField(max_length=255)),
                 ('image', models.ImageField(upload_to='Image_books/')),
+                ('author', models.ForeignKey(to='catalog.Authors')),
+                ('location', models.ForeignKey(to='catalog.Locations')),
             ],
         ),
     ]

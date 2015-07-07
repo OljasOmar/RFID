@@ -27,6 +27,7 @@ class Main_table(models.Model):
     rfid = models.CharField(max_length=255)
     image = models.ImageField(upload_to='Image_books/')
 
+
     def publish(self):
         self.save()
     def __str__(self):
