@@ -22,10 +22,23 @@ class Authors(models.Model):
 class Loaning_period(models.Model):
     period = models.CharField(max_length=255, help_text="Enter loaning period")
     calendar_days = models.IntegerField(default=0)
+
     def publish(self):
         self.save()
     def __str__(self):
         return self.period + " "
+
+class User_info(models.Model):
+    name = models.CharField(max_length=255, help_text="Enter user name")
+    department = models.CharField(max_length=255, help_text="Name of the department")
+    barcode_id = models.CharField(max_length=255, help_text="user id")
+    #userImage check
+    #user_photo = models.ImageField(upload_to='')
+
+    def publish(self):
+        self.save()
+    def __str__(self):
+        return self.name + ' '
 
 class Main_table(models.Model):
     title = models.CharField(max_length=255, help_text="Enter title of a book")
