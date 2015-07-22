@@ -1,5 +1,7 @@
+from datetime import date, timedelta
 from django.db import models
-
+import django.utils.timezone
+import datetime
 
 class Locations(models.Model):
     bookCode = models.CharField(max_length=255, help_text="Enter code of the book. use UPPERCASE")
@@ -32,6 +34,7 @@ class User_info(models.Model):
     name = models.CharField(max_length=255, help_text="Enter user name")
     department = models.CharField(max_length=255, help_text="Name of the department")
     barcode_id = models.CharField(max_length=255, help_text="user id")
+    #loanedBooks =
     #userImage check
     #user_photo = models.ImageField(upload_to='')
 
@@ -49,7 +52,6 @@ class Main_table(models.Model):
     image = models.ImageField(upload_to='Image_books/')
     loaning_period = models.ForeignKey('Loaning_period', default=0)
 
-
     def publish(self):
         self.save()
     def __str__(self):
@@ -60,4 +62,17 @@ class Main_table(models.Model):
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
 
+
+class LoanedBook(models.Model):
+    user = models.ForeignKey(User_info)
+    book = models.ForeignKey(Main_table)
+    created_at = models.DateTimeField(auto_now = True)
+    expires_at = models.DateTimeField(default= datetime.datetime.now(), editable=False)
+
+    def save(self, *args, **kwargs):
+        self.expires_at = datetime.datetime.now()+timedelta(days=self.book.loaning_period.calendar_days)
+        super(LoanedBook, self).save(*args, **kwargs)
+
+    def publish(self):
+        self.save()
 

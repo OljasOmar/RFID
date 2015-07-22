@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Locations, Authors, Main_table, Loaning_period, User_info
+from .models import Locations, Authors, Main_table, Loaning_period, User_info, LoanedBook
 
 
 # Register your models here.
@@ -30,5 +30,11 @@ admin.site.register(Loaning_period, Loaning_periodAdmin)
 class User_infoAdmin(admin.ModelAdmin):
     #readonly_fields = ('image_tag')
     list_display = ('name', 'department', 'barcode_id', 'id' )
-    search_fields = ('name', 'department', 'barcode_id')
+    search_fields = ['name', 'department', 'barcode_id']
 admin.site.register(User_info, User_infoAdmin)
+
+class LoanedBookAdmin(admin.ModelAdmin):
+    list_display = ('user', 'book')
+    search_fields = ['user__name', 'book__title']
+
+admin.site.register(LoanedBook, LoanedBookAdmin)
