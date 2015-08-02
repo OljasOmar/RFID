@@ -6,3 +6,5 @@ class User:
         self.barcode_id = barcode_id
         self.loaned_books = loaned_books
 
+
+

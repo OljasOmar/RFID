@@ -23,11 +23,6 @@ def printBookDetails(book):
     print ('Title: ' + book.title)
     print ('Author: ' + book.author)
     print ('Year: ' + book.year_published)
-
-
-
-    
-
     
 def main():
     ann = as3992_api.AntennaDevice()

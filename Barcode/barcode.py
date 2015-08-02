@@ -1,10 +1,16 @@
 import urllib2
 from User import User
-import sys
+
 
 import json
 
+
+
+mBarcodeNumber = ""
+
 def barcode(barcodeNumber):
+    mBarcodeNumber = barcodeNumber
+    return mBarcodeNumber
 
     print barcodeNumber
     url = "http://127.0.0.1:8000/user/" + barcodeNumber
@@ -47,57 +53,44 @@ hidUp = { 4: 'A', 5: 'B', 6: 'C', 7: 'D', 8: 'E', 9: 'F', 10: 'G', 11: 'H', 12: 
 
 readCode = open('/dev/hidraw0', 'r')
 
+def readBarcode():
+    shift = False
+    barcodeNumber = ""
+    done = False
+    while not done:
+            ## Get the character from the HID
+            buffer = readCode.read(8)
+            for c in buffer:
+                if ord(c) > 0:
+                    ##  40 is carriage return which signifies
+                    ##  we are done looking for characters
+                    if int(ord(c)) == 40:
+                        #done = True
+                        done = True
+                        break
 
+                    ##  If we are shifted then we have to
+                    ##  use the hid2 characters.
+                    if shift:
 
+                        ## If it is a '2' then it is the shift key
+                        if int(ord(c)) == 2 :
+                            shift = True
 
-shift = False
+                        ## if not a 2 then lookup the mapping
+                        else:
+                            barcodeNumber += hidUp[ int(ord(c)) ]
+                            shift = False
 
-done = False
+                    ##  If we are not shifted then use
+                    ##  the hid characters
 
-barcodeNumber = ""
+                    else:
 
-while not done:
-    ## Get the character from the HID
-    buffer = readCode.read(8)
-    for c in buffer:
-        if ord(c) > 0:
-
-            ##  40 is carriage return which signifies
-            ##  we are done looking for characters
-            if int(ord(c)) == 40:
-                #done = True
-                barcode(barcodeNumber)
-                barcodeNumber = ""
-                break
-
-
-
-            ##  If we are shifted then we have to
-            ##  use the hid2 characters.
-            if shift:
-
-                ## If it is a '2' then it is the shift key
-                if int(ord(c)) == 2 :
-                    shift = True
-
-                ## if not a 2 then lookup the mapping
-                else:
-                    barcodeNumber += hidUp[ int(ord(c)) ]
-                    shift = False
-
-            ##  If we are not shifted then use
-            ##  the hid characters
-
-            else:
-
-                ## If it is a '2' then it is the shift key
-                if int(ord(c)) == 2 :
-                    shift = True
-                ## if not a 2 then lookup the mapping
-                else:
-                    barcodeNumber += hid[ int(ord(c)) ]
-
-
-
-
-
+                        ## If it is a '2' then it is the shift key
+                        if int(ord(c)) == 2 :
+                            shift = True
+                        ## if not a 2 then lookup the mapping
+                        else:
+                            barcodeNumber += hid[ int(ord(c)) ]
+    return barcodeNumber

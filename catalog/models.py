@@ -1,6 +1,5 @@
 from datetime import date, timedelta
 from django.db import models
-import django.utils.timezone
 import datetime
 
 class Locations(models.Model):

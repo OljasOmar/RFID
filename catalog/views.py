@@ -26,19 +26,8 @@ def book_info(request, rfidValue):
 
 def user_info(request, barcodeValue):
     try:
-        userBooks = []
         user = User_info.objects.get(barcode_id=barcodeValue)
-
-        loanedBooks = LoanedBook.objects.filter(user = user).all()
-
-        for item in loanedBooks:
-            temp = {
-                "bookname": item.book.title,
-                "author": item.book.author.name,
-                "created at": item.created_at,
-                "expires at": item.expires_at,
-            }
-            userBooks.append(temp)
+        userBooks = getUserLoanedBooks(user)
 
         to_json = {
             "barcode": user.barcode_id,
@@ -54,29 +43,74 @@ def saveBookToUser (request, bookID, userID):
     user = User_info.objects.get(barcode_id=userID)
     book = Main_table.objects.get(rfid=bookID)
 
-    rows = LoanedBook.objects.filter(user = user).all()
+    loanedBooks = LoanedBook.objects.filter(user = user).all()
+
+    ################################################################
 
     isTakenAlready = False
-    ################################################################
-    for row in rows:
+
+    for row in loanedBooks:
         if row.book == book:
-            return JsonResponse({"message":"Book is loaned already"})
-        else:
             isTakenAlready = True
+            return JsonResponse({"message":"Book is loaned already",
+                                 "status": False
+                                 })
+
 
     if not isTakenAlready:
         newBook = LoanedBook()
         newBook.user = user
         newBook.book = book
         newBook.save()
+
+    userBooks = getUserLoanedBooks(user)
+
     ################################################################
     return JsonResponse({"user":user.name,
-                         "books": book.title,
-                         "author": book.author.name,
-                         "year_published": book.year_pb,
-                         "image": book.image.name,
+                         "books": userBooks,
+                         "status": True
                          })
 
+#return books#
+def returnBooks (request, bookID, userID):
+    user = User_info.objects.get(barcode_id=userID)
+    book = Main_table.objects.get(rfid=bookID)
+
+    returnBooks = LoanedBook.objects.filter(user = user).all()
+
+    ################################################################
+
+    isReturnedAlready = False
+
+    for row in returnBooks:
+        if row.book == book:
+            row.book.delete()
+
+    userBooks = getUserLoanedBooks(user)
+    ################################################################
+    return JsonResponse({"user":user.name,
+                         "books": userBooks,
+                         })
+
+
+
+#return books end#
+
+
+def getUserLoanedBooks(user):
+    userBooks = []
+    loanedBooks = LoanedBook.objects.filter(user = user).all()
+
+    for item in loanedBooks:
+        temp = {
+            "bookname": item.book.title,
+            "year_published": item.book.year_pb,
+            "author": item.book.author.name,
+            "created_at": item.created_at,
+            "expires_at": item.expires_at,
+        }
+        userBooks.append(temp)
+    return userBooks
 
 def upload_pic(request):
     if request.method == 'POST':
