@@ -1,31 +1,57 @@
 import urllib2
 from User import User
-
+from Book import Book
 
 import json
 
 
 
-mBarcodeNumber = ""
+'''
+
+Barcode
+    readBarcode()
+JsonParser
+    json -> object
+    parseJsonToUser
+    parse
+HtmlHelper
+    connect(url) -> Json
+RfidHelper
+    rfidRead() -> String
+
+MainClass
+    url ="http://localhost"
+    htmlHelper = HtmlHelper()
+    jsonParser = JsonParser()
+
+    jsonData = htmlHelper.get(url)
+     user = jsonParser.parserJsonToUser(jsonData)
+
+
 
 def barcode(barcodeNumber):
-    mBarcodeNumber = barcodeNumber
-    return mBarcodeNumber
 
-    print barcodeNumber
+    #print barcodeNumber
     url = "http://127.0.0.1:8000/user/" + barcodeNumber
 
     r = urllib2.urlopen(url)
     data = json.loads(r.read())
     parsedUser = parseJsonToUser(data)
     printUserDetails(parsedUser)
+'''
 
 def parseJsonToUser(data):
     name = data['name']
     department = data['department']
     barcodeID = data['barcode']
-    loanedBooks = data['loaned_books']
-    user = User(name, department, barcodeID, loanedBooks)
+    loanedBooks  = data['loaned_books']
+    books = []
+    for jsonBook in loanedBooks:
+        print jsonBook
+        book = Book(jsonBook['bookname'], jsonBook['year_published'], jsonBook['author'])
+        books.append(book)
+
+    user = User(name, department, barcodeID, books)
     return user
 
 def printUserDetails(user):

@@ -1,15 +1,20 @@
 from types import ListType
+import User
 import StatusMessage
 import LoanedBook
 import barcode
 import urllib2
 import json
 import as3992_api
+from barcode import parseJsonToUser, printUserDetails
+import time
 
+lastUserBarcodeNumber = ""
+userSession = None
 
 def rfid(rfidNumber):
 
-    barcodeNumber = barcode.mBarcodeNumber
+    barcodeNumber = barcode.readBarcode()
     url = "http://127.0.0.1:8000/book/" + rfidNumber + "/user/" + barcodeNumber
     response = urllib2.urlopen(url)
     data = json.load(response)
@@ -47,8 +52,45 @@ def printLoanedBookDetails(loaned_book):
 def printAlreadyLoanedDetails(statusMessage):
     print ("Book status: " + statusMessage.message)
 
+def welcomeScreen():
+    print "Welcome"
+    print "Please, scan your barcode:"
+    userID = barcode.readBarcode()
+    # serverge user turaly info al
+    url = "http://127.0.0.1:8000/user/" + userID
+    r = urllib2.urlopen(url)
+    data = json.loads(r.read())
+    global userSession
+    userSession = parseJsonToUser(data)
+    if userSession != None:
+        infoScreen()
+
+def infoScreen():
+    global userSession
+    print "Hello, ", userSession.name
+    print "Your book list:"
+    for index, book in enumerate(userSession.loaned_books):
+        print "Bookname:",index + 1, book.title + ' | ' + book.author + ' | ' + book.year_published
+
+
+    print "========================================================"
+    print "1. Loan a book"
+    print "0. Back"
+
+    choice = raw_input("Choose an option:")
+
+    if choice == "1":
+        #open new session to read RFID
+        print "1"
+    elif choice == "0":
+        userSession = None
+        welcomeScreen()
+    else:
+        print "Your choice was incorrect"
+
 def main():
-    print ("Book Info:")
+    welcomeScreen()
+    '''print ("Book Info:")
     ann = as3992_api.AntennaDevice()
 
     ann.set_antenna_state(True)
@@ -60,7 +102,7 @@ def main():
         print a
         rfid(a)
 
-    ann.set_antenna_state(False)
+    ann.set_antenna_state(False)'''
 
 '''def fortest():
     print("This is fortest")

@@ -6,4 +6,3 @@ class LoanedBook:
         self.year_published = year_published
         self.due_to = due_to
 
-        pass
